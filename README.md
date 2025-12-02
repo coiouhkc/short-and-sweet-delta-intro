@@ -1,42 +1,67 @@
-# Template for short-and-sweet lightning talks
-
-## Inspiration/background
-
-* https://www.chessable.com/chess-openings/s/short%20sweet
-* https://en.wikipedia.org/wiki/Lightning_talk
-
-## Why
-
-**If** you want to 
-
-* share a use-case/problem solution from your project
-* share experience with a technology/tool/framework
-* dive (deeper) into new topics
-* learn by doing
-
-**then** a lightning talk is what you need!
-
-The goal of the short-and-sweet talk is not to provide an extensive teach-in experience - it's about knowledge sharing and inspiration to dive deeper later.
-
-## What
-
-* slides (Markdown/AsciiDoc)
-  * you might want to use Marp (https://marpit.marp.app) in VSCode + Marp extension
-    * see also https://github.com/yhatt/marp-cli-example
-* code
-* script/helper snippers to speed up the demo
+---
+marp: true
+title: Short and sweet intro to Delta Lake
+description: Short and sweet intro to Delta Lake
+theme: uncover
+paginate: true
+_paginate: false
 
 
-## When
+---
 
-TBD, most probably at lunch time aka 'Brown Bag Meeting' - simply announce and/or book the next available slot.
+# Short and sweet
 
-Overall duration should be around 15-30 mins to reserve enough time to come to the meat of the talk **and** to have 5-10 mins for Q&A
+## Intro to Delta Lake
 
-## How
+---
 
-* prepare the [What](##What)
-  * based on this template
-  * let https://github.com/OpenValue-D fork it
-* book the [When](##When)
-* and have fun
+# Brief history/ explain
+
+* TXT, CSV - unstructured
+* JSON, XML - semi-structured
+* ORC, PARQUET, AVRO - structured
+* DELTA, ICEBERG - catalogued/ meta-structured ?
+
+---
+
+# Intro, reason & background
+
+## Delta
+
+* Open-source project
+* Scalable
+* ACID transactions
+* Time travel
+* Unified streaming and batching
+* Data lake
+
+---
+
+# Demo
+
+---
+
+# Links
+
+* https://www.baeldung.com/java-intro-to-apache-parquet
+* https://parquet.apache.org/docs/learning-resources/blog-posts/
+* https://www.slideshare.net/slideshow/the-apache-spark-file-format-ecosystem/236311037
+* https://github.com/delta-io/delta/blob/master/kernel/USER_GUIDE.md
+* https://docs.delta.io/
+* https://docs.delta.io/quick-start/
+
+---
+
+# More links
+
+* https://www.youtube.com/watch?v=AJemNfC27_M
+* https://www.youtube.com/watch?v=LJtShrQqYZY
+* https://www.youtube.com/watch?v=1j8SdS7s_NY
+* https://www.youtube.com/watch?v=TsmhRZElPvM
+* https://medium.com/art-of-data-engineering/apache-iceberg-vs-delta-lake-a-comprehensive-guide-for-modern-data-processing-73be5c71795a
+* https://www.datacamp.com/blog/iceberg-vs-delta-lake
+
+
+---
+
+# Q&A
