@@ -20,7 +20,7 @@ import org.eclipse.jgit.revwalk.RevCommit;
 import org.eclipse.jgit.treewalk.CanonicalTreeParser;
 import org.eclipse.jgit.util.io.DisabledOutputStream;
 
-public class list_git_commit {
+public class demo_000_list_git_commit {
 
     public static void main(String... args) throws IOException, NoHeadException, GitAPIException {
         String repoPath = "./";
