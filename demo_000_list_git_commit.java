@@ -22,41 +22,42 @@ import org.eclipse.jgit.util.io.DisabledOutputStream;
 
 public class demo_000_list_git_commit {
 
-    public static void main(String... args) throws IOException, NoHeadException, GitAPIException {
-        String repoPath = "./";
-        try (Git git = Git.open(new File(repoPath));
-                ObjectReader reader = git.getRepository().newObjectReader();
-                DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);) {
-            diffFormatter.setRepository(git.getRepository());
-            Iterator<RevCommit> it = git.log().call().iterator();
-            while (it.hasNext()) {
-                RevCommit rc = it.next();
+	public static void main(String... args) throws IOException, NoHeadException, GitAPIException {
+		String repoPath = "./";
+		try (Git git = Git.open(new File(repoPath));
+				ObjectReader reader = git.getRepository().newObjectReader();
+				DiffFormatter diffFormatter = new DiffFormatter(DisabledOutputStream.INSTANCE);) {
+			diffFormatter.setRepository(git.getRepository());
+			Iterator<RevCommit> it = git.log().call().iterator();
+			while (it.hasNext()) {
+				RevCommit rc = it.next();
 
-                List<DiffEntry> changes = git
-                        .diff()
-                        .setOldTree(
-                                rc.getParentCount() > 0
-                                        ? new CanonicalTreeParser(null, reader, rc.getParent(0).getTree().getId())
-                                        : null)
-                        .setNewTree(new CanonicalTreeParser(null, reader, rc.getTree().getId()))
-                        .call();
+				List<DiffEntry> changes = git
+					.diff()
+					.setOldTree(
+							rc.getParentCount() > 0
+									? new CanonicalTreeParser(null, reader, rc.getParent(0).getTree().getId())
+									: null)
+					.setNewTree(new CanonicalTreeParser(null, reader, rc.getTree().getId()))
+					.call();
 
-                for (DiffEntry change : changes) {
-                    EditList el = diffFormatter.toFileHeader(change).toEditList();
-                    List<Integer> deletedAndInserted = el.stream()
-                            .map(edit -> List.of(edit.getLengthA(), edit.getLengthB())).reduce(List.of(0, 0),
-                                    (l1, l2) -> List.of(l1.get(0) + l2.get(0), l1.get(1) + l2.get(1)));
-                    int deleted = deletedAndInserted.get(0);
-                    int inserted = deletedAndInserted.get(1);
-                    out.println(
-                            String.format("%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,%s", rc.getId().getName(),
-                                    rc.getShortMessage(),
-                                    rc.getAuthorIdent().getEmailAddress(),
-                                    rc.getCommitterIdent().getEmailAddress(), rc.getCommitTime(), rc.getCommitTime(),
-                                    change.getOldPath(), change.getNewPath(), deleted, inserted,
-                                    change.getChangeType()));
-                }
-            }
-        }
-    }
+				for (DiffEntry change : changes) {
+					EditList el = diffFormatter.toFileHeader(change).toEditList();
+					List<Integer> deletedAndInserted = el.stream()
+						.map(edit -> List.of(edit.getLengthA(), edit.getLengthB()))
+						.reduce(List.of(0, 0),
+								(l1, l2) -> List.of(l1.get(0) + l2.get(0), l1.get(1) + l2.get(1)));
+					int deleted = deletedAndInserted.get(0);
+					int inserted = deletedAndInserted.get(1);
+					out.println(
+							String.format("%s,%s,%s,%s,%s,%s,%s,%s,%d,%d,%s", rc.getId().getName(),
+									rc.getShortMessage(),
+									rc.getAuthorIdent().getEmailAddress(),
+									rc.getCommitterIdent().getEmailAddress(), rc.getCommitTime(), rc.getCommitTime(),
+									change.getOldPath(), change.getNewPath(), deleted, inserted,
+									change.getChangeType()));
+				}
+			}
+		}
+	}
 }

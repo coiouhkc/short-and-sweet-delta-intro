@@ -3,3 +3,23 @@ docker run --rm -it -p 4040:4040 -p 7077:7077 spark:4.0.1-java21-scala /opt/spar
 jbang export fatjar --force dataset_demo.java
 zip -d dataset_demo-fatjar.jar META-INF/*.RSA META-INF
 /*.DSA META-INF/*.SF
+
+
+```shell
+REPO_DIR=/tmp/repo
+rm -fr $REPO_DIR
+mkdir $REPO_DIR
+cd $REPO_DIR
+git init
+git add .
+git commit -m "Initial commit"
+echo "hello" >> log.txt
+git add .
+git commit -m "1st commit"
+echo "world" >> log.txt
+git add .
+git commit -m "2nd commit"
+echo "!" >> log.txt
+git add .
+git commit -m "3rd commit"
+```

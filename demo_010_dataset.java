@@ -16,73 +16,73 @@ import org.apache.spark.sql.SparkSession;
 
 public class demo_010_dataset {
 
-    public static void main(String... args) {
-        SparkSession spark = SparkSession.builder().appName("010_dataset_demo").master("local[*]").getOrCreate();
+	public static void main(String... args) {
+		SparkSession spark = SparkSession.builder().appName("010_dataset_demo").master("local[*]").getOrCreate();
 
-        spark.createDataset(List.of("Hello", "world"), Encoders.STRING()).show();
+		spark.createDataset(List.of("Hello", "world"), Encoders.STRING()).show();
 
-        // Create a DataFrame
-        Dataset<MyGitCommit> df = spark.createDataset(
-                List.of(
-                        new MyGitCommit("123456", "emil.tischbein", 10, 0),
-                        new MyGitCommit("67890a", "pony.huetchen", 9, 123)),
-                Encoders.bean(MyGitCommit.class));
-        df.show();
+		// Create a DataFrame
+		Dataset<MyGitCommit> df = spark.createDataset(
+				List.of(
+						new MyGitCommit("123456", "emil.tischbein", 10, 0),
+						new MyGitCommit("67890a", "pony.huetchen", 9, 123)),
+				Encoders.bean(MyGitCommit.class));
+		df.show();
 
-        // Stop the Spark session
-        spark.stop();
-    }
+		// Stop the Spark session
+		spark.stop();
+	}
 
-    // public static record MyGitCommit(
-    // String hash, String committer, Integer modified, Integer deleted) {
-    // }
+	// public static record MyGitCommit(
+	// String hash, String committer, Integer modified, Integer deleted) {
+	// }
 
-    public static class MyGitCommit implements Serializable {
-        String hash;
-        String committer;
-        Integer modified;
-        Integer deleted;
+	public static class MyGitCommit implements Serializable {
+		String hash;
+		String committer;
+		Integer modified;
+		Integer deleted;
 
-        public MyGitCommit() {
-        }
+		public MyGitCommit() {
+		}
 
-        public MyGitCommit(String hash, String committer, Integer modified, Integer deleted) {
-            this.hash = hash;
-            this.committer = committer;
-            this.modified = modified;
-            this.deleted = deleted;
-        }
+		public MyGitCommit(String hash, String committer, Integer modified, Integer deleted) {
+			this.hash = hash;
+			this.committer = committer;
+			this.modified = modified;
+			this.deleted = deleted;
+		}
 
-        public String getHash() {
-            return hash;
-        }
+		public String getHash() {
+			return hash;
+		}
 
-        public String getCommitter() {
-            return committer;
-        }
+		public String getCommitter() {
+			return committer;
+		}
 
-        public Integer getModified() {
-            return modified;
-        }
+		public Integer getModified() {
+			return modified;
+		}
 
-        public Integer getDeleted() {
-            return deleted;
-        }
+		public Integer getDeleted() {
+			return deleted;
+		}
 
-        public void setHash(String hash) {
-            this.hash = hash;
-        }
+		public void setHash(String hash) {
+			this.hash = hash;
+		}
 
-        public void setCommitter(String committer) {
-            this.committer = committer;
-        }
+		public void setCommitter(String committer) {
+			this.committer = committer;
+		}
 
-        public void setModified(Integer modified) {
-            this.modified = modified;
-        }
+		public void setModified(Integer modified) {
+			this.modified = modified;
+		}
 
-        public void setDeleted(Integer deleted) {
-            this.deleted = deleted;
-        }
-    }
+		public void setDeleted(Integer deleted) {
+			this.deleted = deleted;
+		}
+	}
 }
