@@ -44,7 +44,12 @@ public class demo_020_delta {
 
 		DeltaTable.forPath(spark, "/tmp/delta/texts").history().show();
 
-		spark.read().format("delta").option("readChangeFeed", "true").option("startingVersion", 0).load("/tmp/delta/texts").show();
+		spark.read()
+			.format("delta")
+			.option("readChangeFeed", "true")
+			.option("startingVersion", 0)
+			.load("/tmp/delta/texts")
+			.show();
 
 		spark.read().format("delta").option("versionAsOf", 0).load("/tmp/delta/texts").show();
 

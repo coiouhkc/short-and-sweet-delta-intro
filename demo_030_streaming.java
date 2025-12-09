@@ -21,47 +21,51 @@ import org.apache.spark.sql.types.StructType;
 public class demo_030_streaming {
 
 	public static void main(String... args) throws TimeoutException, StreamingQueryException {
-        SparkSession spark = SparkSession.builder()
+		SparkSession spark = SparkSession.builder()
 			.config("spark.sql.extensions", "io.delta.sql.DeltaSparkSessionExtension")
 			.config("spark.sql.catalog.spark_catalog", "org.apache.spark.sql.delta.catalog.DeltaCatalog")
-			.appName("030_streaming_demo").master("local[*]").getOrCreate();
+			.appName("030_streaming_demo")
+			.master("local[*]")
+			.getOrCreate();
 
-        spark.sparkContext().setLogLevel("WARN");
+		spark.sparkContext().setLogLevel("WARN");
 
-        StructType schema = DataTypes.createStructType(List.of(
-                DataTypes.createStructField("commitId", DataTypes.StringType, true),
-                DataTypes.createStructField("shortMessage", DataTypes.StringType, true),
-                DataTypes.createStructField("authorEmail", DataTypes.StringType, true),
-                DataTypes.createStructField("committerEmail", DataTypes.StringType, true),
-                DataTypes.createStructField("authoredAt", DataTypes.IntegerType, true),
-                DataTypes.createStructField("committedAt", DataTypes.IntegerType, true),
-                DataTypes.createStructField("oldPath", DataTypes.StringType, true),
-                DataTypes.createStructField("newPath", DataTypes.StringType, true),
-                DataTypes.createStructField("linesInserted", DataTypes.IntegerType, true),
-                DataTypes.createStructField("linesDeleted", DataTypes.IntegerType, true),
-                DataTypes.createStructField("changeType", DataTypes.StringType, true)));
+		StructType schema = DataTypes.createStructType(List.of(
+				DataTypes.createStructField("commitId", DataTypes.StringType, true),
+				DataTypes.createStructField("shortMessage", DataTypes.StringType, true),
+				DataTypes.createStructField("authorEmail", DataTypes.StringType, true),
+				DataTypes.createStructField("committerEmail", DataTypes.StringType, true),
+				DataTypes.createStructField("authoredAt", DataTypes.IntegerType, true),
+				DataTypes.createStructField("committedAt", DataTypes.IntegerType, true),
+				DataTypes.createStructField("oldPath", DataTypes.StringType, true),
+				DataTypes.createStructField("newPath", DataTypes.StringType, true),
+				DataTypes.createStructField("linesInserted", DataTypes.IntegerType, true),
+				DataTypes.createStructField("linesDeleted", DataTypes.IntegerType, true),
+				DataTypes.createStructField("changeType", DataTypes.StringType, true)));
 
-        Dataset<Row> df = spark.readStream()
-                .format("kafka")
-                .option("kafka.bootstrap.servers", "localhost:9094")
-                .option("subscribe", "my-git-source-topic")
-                .option("startingOffsets", "earliest")
-                .load();
+		Dataset<Row> df = spark.readStream()
+			.format("kafka")
+			.option("kafka.bootstrap.servers", "localhost:9094")
+			.option("subscribe", "my-git-source-topic")
+			.option("startingOffsets", "earliest")
+			.load();
 
-        Dataset<GitSourceCommitChange> ds = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
-                .select(functions.from_json(new Column("value"), schema).alias("data")).select("data.*")
-                .as(ExpressionEncoder.javaBean(GitSourceCommitChange.class));
+		Dataset<GitSourceCommitChange> ds = df.selectExpr("CAST(key AS STRING)", "CAST(value AS STRING)")
+			.select(functions.from_json(new Column("value"), schema).alias("data"))
+			.select("data.*")
+			.as(ExpressionEncoder.javaBean(GitSourceCommitChange.class));
 
-        // ds.writeStream().format("console").start()
-        // .awaitTermination();
+		// ds.writeStream().format("console").start()
+		// .awaitTermination();
 
-        ds.writeStream().format("delta")
+		ds.writeStream()
+			.format("delta")
 			.option("overwriteSchema", "true")
 			.option("delta.enableChangeDataFeed", true)
 			.option("checkpointLocation", "/tmp/checkpoints/commits")
 			.start("/tmp/delta/commits")
-            .awaitTermination();
-    }
+			.awaitTermination();
+	}
 
 	public static class GitSourceCommitChange {
 		private String commitId;
