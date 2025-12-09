@@ -11,6 +11,7 @@ import java.util.concurrent.TimeoutException;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder;
 import org.apache.spark.sql.functions;
@@ -55,15 +56,27 @@ public class demo_030_streaming {
 			.select("data.*")
 			.as(ExpressionEncoder.javaBean(GitSourceCommitChange.class));
 
-		// ds.writeStream().format("console").start()
-		// .awaitTermination();
+		// ds.writeStream()
+		// 	.format("delta")
+		// 	.option("overwriteSchema", "true")
+		// 	.option("delta.enableChangeDataFeed", true)
+		// 	.option("checkpointLocation", "/tmp/checkpoints/commits")
+		// 	.start("/tmp/delta/commits")
+		// 	.awaitTermination();
 
 		ds.writeStream()
-			.format("delta")
-			.option("overwriteSchema", "true")
-			.option("delta.enableChangeDataFeed", true)
-			.option("checkpointLocation", "/tmp/checkpoints/commits")
-			.start("/tmp/delta/commits")
+			.foreachBatch((batchDs, batchId) -> {
+				batchDs.write()
+					.format("delta")
+					.mode(SaveMode.Overwrite)
+					.option("overwriteSchema", "true")
+					.option("delta.enableChangeDataFeed", true)
+					.option("checkpointLocation", "/tmp/checkpoints/commits")
+					.save("/tmp/delta/commits");
+				batchDs.write().format("console");
+				batchDs.show();
+			})
+			.start()
 			.awaitTermination();
 	}
 
